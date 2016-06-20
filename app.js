@@ -23,7 +23,9 @@ app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'client')));
 app.use(express.static(path.join(__dirname, 'client')));
 
-// app.use('/', express.static(client));
+app.all('/*', function(req, res) {
+  res.sendfile('client/index.html');
+});
 
 // app.use('/', routes);
 // app.use('/users', users);
