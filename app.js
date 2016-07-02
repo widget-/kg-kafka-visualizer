@@ -4,6 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var kafka = require('kafka-node');
+// var kafkaConsumer = kafka.Consumer();
 
 // var routes = require('./routes/index');
 // var users = require('./routes/users');
@@ -23,6 +25,29 @@ app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'client')));
 app.use(express.static(path.join(__dirname, 'client')));
 
+
+// kafka stuff
+var client = new kafka.Client('localhost:9092');
+var consumer = new kafka.Consumer(
+        client,
+        [
+            { topic: 'test', partition: 0 },
+            { topic: 'test', partition: 1 }
+        ],
+        {
+            autoCommit: false
+        }
+    );
+
+consumer.on('message', function(message) {
+    console.log('New kafka message: ' + message);
+})
+
+consumer.on('error', function(err) {
+    console.log('Kafka Error! ' + err);
+})
+
+// website stuff
 app.all('/*', function(req, res) {
   res.sendfile('client/index.html');
 });
