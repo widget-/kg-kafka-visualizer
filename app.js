@@ -28,24 +28,48 @@ app.use(express.static(path.join(__dirname, 'client')));
 
 // kafka stuff
 var client = new kafka.Client('localhost:9092');
-var consumer = new kafka.Consumer(
-        client,
-        [
-            { topic: 'test', partition: 0 },
-            { topic: 'test', partition: 1 }
-        ],
-        {
-            autoCommit: false
-        }
-    );
+// var consumer = new kafka.Consumer(
+//         client,
+//         [
+//             { topic: 'test', partition: 0 },
+//             { topic: 'test', partition: 1 }
+//         ],
+//         {
+//             // autoCommit: false
+//         }
+//     );
+//
+// consumer.on('message', function(message) {
+//     console.log('New kafka message: ' + message);
+// });
+//
+// consumer.on('error', function(err) {
+//     console.log('Kafka Error! ' + err);
+// });
+//
+// consumer.on('offsetOutOfRange', function (err) {
+//     console.log("Error!: " + err);
+// });
+//
+// consumer.addTopics(['test']);
 
+var client = new kafka.Client();
+var consumer = new kafka.HighLevelConsumer(
+    client,
+    [
+        { topic: 'test' }
+    ],
+    {
+        groupId: 'my-group'
+    }
+);
 consumer.on('message', function(message) {
-    console.log('New kafka message: ' + message);
-})
+    console.log('New kafka message: ' + JSON.stringify(message,null,2));
+});
 
 consumer.on('error', function(err) {
     console.log('Kafka Error! ' + err);
-})
+});
 
 // website stuff
 app.all('/*', function(req, res) {
