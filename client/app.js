@@ -6,6 +6,7 @@ angular.module('myApp', [
   'myApp.viewer',
   'myApp.view2',
   'myApp.version',
+  'kafkaSocket',
   'ngMaterial',
   'ngAnimate'
 ]).
@@ -29,7 +30,8 @@ config(function($locationProvider, $stateProvider, $urlRouterProvider, $mdThemin
 
     $mdThemingProvider.theme('default')
       .primaryPalette('indigo')
-      .accentPalette('red');
+      .accentPalette('blue')
+      // .dark();
 }).
 run(function($rootScope) {
     $rootScope.$on('routeChangeSuccess', function(route) {
